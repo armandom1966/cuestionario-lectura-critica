@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba Saber 11° – Lectura Crítica</title>
+<style>
+  :root{
+    --rojo:#c8102e;
+    --rojo-oscuro:#9e0c24;
+    --turquesa:#1fb6c1;
+    --gris-fondo:#f4f6f8;
+    --gris-borde:#e1e5ea;
+    --texto:#2b2b2b;
+    --texto-suave:#5a6470;
+    --verde:#16a34a;
+    --amarillo:#f59e0b;
+    --sombra:0 6px 20px rgba(0,0,0,.08);
+    --radio:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--gris-fondo);color:var(--texto);line-height:1.55}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px}
+  header.portada{
+    background:linear-gradient(135deg,var(--rojo) 0%,var(--rojo-oscuro) 100%);
+    color:#fff;border-radius:var(--radio);padding:28px 26px;box-shadow:var(--sombra);
+    margin-bottom:20px;position:relative;overflow:hidden;
+  }
+  header.portada::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  header.portada .badge{display:inline-block;background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:13px;margin-bottom:8px;font-weight:500}
+  header.portada h1{font-size:30px;margin-bottom:6px;letter-spacing:.3px}
+  header.portada p{opacity:.95;font-size:15px}
+  .tarjeta{background:#fff;border-radius:var(--radio);padding:22px 24px;box-shadow:var(--sombra);margin-bottom:18px}
+  .tarjeta h2{color:var(--rojo);font-size:20px;margin-bottom:14px;border-left:4px solid var(--turquesa);padding-left:10px}
+
+  .stats-iniciales{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 4px}
+  .stat{background:var(--gris-fondo);padding:14px;border-radius:10px;text-align:center;border:1px solid var(--gris-borde)}
+  .stat .num{font-size:22px;font-weight:700;color:var(--rojo)}
+  .stat .lbl{font-size:12px;color:var(--texto-suave);margin-top:2px}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-grid .full{grid-column:1/-1}
+  label{display:block;font-size:13px;font-weight:600;color:var(--texto-suave);margin-bottom:6px}
+  label .req{color:var(--rojo)}
+  input[type="text"],select{
+    width:100%;padding:10px 12px;border:1px solid var(--gris-borde);border-radius:8px;
+    font-size:15px;font-family:inherit;background:#fff;transition:border-color .2s;
+  }
+  input[type="text"]:focus,select:focus{outline:none;border-color:var(--turquesa);box-shadow:0 0 0 3px rgba(31,182,193,.15)}
+  .error-msg{color:var(--rojo);font-size:12px;margin-top:4px;display:none}
+  .error-msg.show{display:block}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 22px;border:none;border-radius:8px;font-size:15px;font-weight:600;
+    cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none
+  }
+  .btn-primario{background:var(--rojo);color:#fff}
+  .btn-primario:hover{background:var(--rojo-oscuro);transform:translateY(-1px)}
+  .btn-primario:disabled{background:#ccc;cursor:not-allowed;transform:none}
+  .btn-secundario{background:#fff;color:var(--texto);border:1px solid var(--gris-borde)}
+  .btn-secundario:hover{background:var(--gris-fondo)}
+  .btn-turquesa{background:var(--turquesa);color:#fff}
+  .btn-turquesa:hover{background:#189aa3}
+
+  .acciones-iniciales{text-align:center;margin-top:18px}
+
+  /* Seccion prueba */
+  .oculto{display:none!important}
+  .barra-progreso{background:#fff;border-radius:var(--radio);padding:14px 18px;box-shadow:var(--sombra);margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .contador{font-weight:700;color:var(--rojo);font-size:15px;white-space:nowrap}
+  .progreso-track{flex:1;height:8px;background:var(--gris-borde);border-radius:4px;overflow:hidden;min-width:120px}
+  .progreso-fill{height:100%;background:linear-gradient(90deg,var(--turquesa),var(--rojo));transition:width .3s;width:0%}
+  .tiempo{font-size:13px;color:var(--texto-suave);white-space:nowrap}
+
+  .contexto{background:#fff;border-radius:var(--radio);padding:20px 24px;box-shadow:var(--sombra);margin-bottom:16px;border-left:4px solid var(--turquesa)}
+  .contexto .etiqueta{display:inline-block;background:var(--turquesa);color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .contexto h3{color:var(--rojo);font-size:18px;margin-bottom:10px}
+  .contexto .texto-lectura{font-size:15px;line-height:1.7;color:#333;text-align:justify;white-space:pre-line}
+  .contexto .texto-lectura p{margin-bottom:10px}
+  .contexto .fuente{margin-top:10px;font-size:12px;color:var(--texto-suave);font-style:italic}
+  .contexto .descripcion-grafica{background:var(--gris-fondo);padding:12px 14px;border-radius:8px;margin-top:12px;font-size:14px;border:1px dashed var(--gris-borde)}
+  .contexto .descripcion-grafica strong{color:var(--rojo)}
+
+  .pregunta-caja{background:#fff;border-radius:var(--radio);padding:22px 24px;box-shadow:var(--sombra)}
+  .pregunta-num{color:var(--rojo);font-weight:700;font-size:14px;margin-bottom:6px}
+  .pregunta-enunciado{font-size:16px;font-weight:600;margin-bottom:16px;line-height:1.5}
+  .opciones{display:flex;flex-direction:column;gap:10px}
+  .opcion{
+    display:flex;align-items:flex-start;gap:10px;padding:12px 14px;
+    border:2px solid var(--gris-borde);border-radius:8px;cursor:pointer;transition:all .2s;
+    background:#fff;
+  }
+  .opcion:hover{border-color:var(--turquesa);background:#f0fbfc}
+  .opcion.seleccionada{border-color:var(--rojo);background:#fff5f6}
+  .opcion input[type="radio"]{margin-top:3px;accent-color:var(--rojo);cursor:pointer}
+  .opcion .letra{font-weight:700;color:var(--rojo);margin-right:4px}
+  .opcion .texto-op{flex:1;font-size:15px}
+  .opcion.correcta{border-color:var(--verde);background:#f0fdf4}
+  .opcion.incorrecta{border-color:var(--rojo);background:#fef2f2}
+  .opcion.correcta .letra,.opcion.incorrecta .letra{color:inherit}
+
+  .nav-preguntas{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .nav-preguntas .btn{min-width:130px}
+
+  /* Resultados */
+  .puntaje-hero{
+    background:linear-gradient(135deg,var(--rojo),var(--rojo-oscuro));color:#fff;
+    border-radius:var(--radio);padding:30px 26px;text-align:center;box-shadow:var(--sombra);margin-bottom:18px
+  }
+  .puntaje-hero .score{font-size:64px;font-weight:800;line-height:1;margin:8px 0}
+  .puntaje-hero .label{font-size:14px;opacity:.9;text-transform:uppercase;letter-spacing:1px}
+  .puntaje-hero .escala{font-size:13px;opacity:.85;margin-top:6px}
+  .barra-escala{height:14px;background:rgba(255,255,255,.2);border-radius:7px;margin:16px auto 8px;max-width:520px;overflow:hidden;position:relative}
+  .barra-escala-fill{height:100%;background:#fff;border-radius:7px;transition:width .8s}
+  .barra-escala-marcas{display:flex;justify-content:space-between;max-width:520px;margin:4px auto 0;font-size:11px;opacity:.8}
+
+  .resumen-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+  .resumen-stats .stat-card{background:#fff;border-radius:var(--radio);padding:18px;text-align:center;box-shadow:var(--sombra);border-top:4px solid var(--rojo)}
+  .resumen-stats .stat-card.ok{border-top-color:var(--verde)}
+  .resumen-stats .stat-card.mal{border-top-color:var(--rojo)}
+  .resumen-stats .stat-card.pct{border-top-color:var(--turquesa)}
+  .resumen-stats .stat-card .v{font-size:30px;font-weight:800;color:var(--texto)}
+  .resumen-stats .stat-card .l{font-size:13px;color:var(--texto-suave);margin-top:4px}
+
+  .clasificacion{background:#fff;border-radius:var(--radio);padding:18px 22px;box-shadow:var(--sombra);margin-bottom:18px;text-align:center}
+  .clasificacion .nivel{font-size:22px;font-weight:700;margin-bottom:4px}
+  .clasificacion .desc{font-size:14px;color:var(--texto-suave)}
+  .nivel.n1{color:#dc2626}
+  .nivel.n2{color:#f59e0b}
+  .nivel.n3{color:#16a34a}
+  .nivel.n4{color:#1fb6c1}
+
+  .acciones-finales{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+
+  /* Revision */
+  .revision-item{background:#fff;border-radius:var(--radio);padding:18px 22px;box-shadow:var(--sombra);margin-bottom:14px;border-left:6px solid var(--verde)}
+  .revision-item.mal{border-left-color:var(--rojo)}
+  .revision-item h4{font-size:15px;margin-bottom:8px}
+  .revision-item .rta{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:6px;background:var(--gris-fondo)}
+  .revision-item .rta.ok{background:#f0fdf4;color:#166534}
+  .revision-item .rta.no{background:#fef2f2;color:#991b1b}
+  .revision-item .afirmacion{font-size:12px;color:var(--texto-suave);margin-top:6px;font-style:italic}
+
+  .envio-status{padding:10px 14px;border-radius:8px;margin-top:10px;font-size:13px;text-align:center}
+  .envio-status.ok{background:#f0fdf4;color:#166534;border:1px solid #86efac}
+  .envio-status.err{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+  .envio-status.loading{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+
+  footer{text-align:center;margin-top:30px;font-size:12px;color:var(--texto-suave)}
+
+  @media (max-width:640px){
+    .form-grid{grid-template-columns:1fr}
+    .stats-iniciales{grid-template-columns:1fr}
+    .resumen-stats{grid-template-columns:1fr}
+    header.portada h1{font-size:22px}
+    .puntaje-hero .score{font-size:48px}
+    .nav-preguntas .btn{flex:1;min-width:unset}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- PORTADA -->
+  <header class="portada" id="portada">
+    <span class="badge">ICFES · Saber 11°</span>
+    <h1>Prueba Lectura Crítica</h1>
+    <p>Simulacro oficial · Cuadernillo de preguntas</p>
+  </header>
+
+  <!-- REGISTRO -->
+  <section class="tarjeta" id="seccion-registro">
+    <h2>📋 Datos del estudiante</h2>
+    <p style="margin-bottom:14px;color:var(--texto-suave);font-size:14px">
+      Completa tus datos antes de comenzar. Al finalizar, tu puntaje quedará registrado automáticamente.
+    </p>
+
+    <div class="stats-iniciales">
+      <div class="stat"><div class="num">49</div><div class="lbl">Preguntas</div></div>
+      <div class="stat"><div class="num">0–100</div><div class="lbl">Escala Saber 11</div></div>
+      <div class="stat"><div class="num">✓</div><div class="lbl">Retroalimentación inmediata</div></div>
+    </div>
+
+    <form id="form-registro" style="margin-top:18px" novalidate>
+      <div class="form-grid">
+        <div class="full">
+          <label for="institucion">Institución Educativa <span class="req">*</span></label>
+          <input type="text" id="institucion" name="institucion" required placeholder="Nombre de tu colegio o institución">
+          <div class="error-msg" id="err-institucion">Por favor escribe el nombre de tu institución.</div>
+        </div>
+        <div class="full">
+          <label for="nombre">Nombre completo <span class="req">*</span></label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Tus nombres y apellidos">
+          <div class="error-msg" id="err-nombre">Por favor escribe tu nombre completo.</div>
+        </div>
+        <div>
+          <label for="grado">Grado</label>
+          <select id="grado" name="grado">
+            <option value="">— Selecciona tu grado —</option>
+            <option value="10">10°</option>
+            <option value="11">11°</option>
+            <option value="Egresado">Egresado</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div>
+          <label for="fecha-display">Fecha y hora</label>
+          <input type="text" id="fecha-display" readonly style="background:var(--gris-fondo);color:var(--texto-suave)">
+        </div>
+      </div>
+      <p style="margin-top:10px;font-size:12px;color:var(--texto-suave)">La fecha y hora se registran automáticamente.</p>
+
+      <div class="acciones-iniciales">
+        <button type="submit" class="btn btn-primario">▶ Iniciar prueba</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- PRUEBA -->
+  <section id="seccion-prueba" class="oculto">
+    <div class="barra-progreso">
+      <div class="contador">Pregunta <span id="num-actual">1</span> / 49</div>
+      <div class="progreso-track"><div class="progreso-fill" id="progreso-fill"></div></div>
+      <div class="tiempo">⏱ <span id="tiempo-transcurrido">00:00</span></div>
+    </div>
+
+    <div class="contexto" id="contexto-caja"></div>
+    <div class="pregunta-caja" id="pregunta-caja"></div>
+
+    <div class="nav-preguntas">
+      <button type="button" class="btn btn-secundario" id="btn-anterior">← Anterior</button>
+      <button type="button" class="btn btn-primario" id="btn-siguiente">Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section id="seccion-resultados" class="oculto">
+    <div class="puntaje-hero">
+      <div class="label">Puntaje Saber 11°</div>
+      <div class="score" id="score-final">0</div>
+      <div class="escala">Escala 0 – 100 puntos</div>
+      <div class="barra-escala"><div class="barra-escala-fill" id="barra-escala-fill"></div></div>
+      <div class="barra-escala-marcas"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+    </div>
+
+    <div class="clasificacion">
+      <div class="nivel" id="nivel-desempeno">—</div>
+      <div class="desc" id="desc-nivel">—</div>
+    </div>
+
+    <div class="resumen-stats">
+      <div class="stat-card ok"><div class="v" id="num-correctas">0</div><div class="l">Correctas</div></div>
+      <div class="stat-card mal"><div class="v" id="num-incorrectas">0</div><div class="l">Incorrectas</div></div>
+      <div class="stat-card pct"><div class="v" id="pct-acierto">0%</div><div class="l">% Acierto</div></div>
+    </div>
+
+    <div class="acciones-finales">
+      <button class="btn btn-turquesa" id="btn-revision">📄 Ver revisión</button>
+      <button class="btn btn-secundario" id="btn-reiniciar">↺ Nueva prueba</button>
+    </div>
+
+    <div id="envio-status" class="envio-status loading">⏳ Registrando resultado…</div>
+  </section>
+
+  <!-- REVISION -->
+  <section id="seccion-revision" class="oculto">
+    <div class="tarjeta">
+      <h2>📄 Revisión de respuestas</h2>
+      <p style="color:var(--texto-suave);font-size:14px">Repasa cada pregunta y su respuesta correcta para identificar las afirmaciones en las que debes profundizar.</p>
+    </div>
+    <div id="lista-revision"></div>
+    <div class="acciones-finales">
+      <button class="btn btn-primario" id="btn-volver-resultados">← Volver a resultados</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>© Icfes 2026 · Cuadernillo oficial Lectura Crítica · Simulacro interactivo</p>
+  </footer>
+</div>
+
+<!-- BANCO DE PREGUNTAS -->
+<script>
+// =====================================================
+// BANCO DE PREGUNTAS – LECTURA CRÍTICA SABER 11°
+// Fuente: Cuadernillo ICFES 2026 (49 preguntas oficiales)
+// =====================================================
+
+const CONTEXTOS = {
+  johnny: {
+    etiqueta: "Texto literario",
+    titulo: "JOHNNY",
+    tipo: "texto",
+    contenido: `«Conozco a un tipo»: Esta es la frase recurrente que define a Johnny. A secas. Johnny era así, uno le decía: me encantaría multiplicar mis ahorros por mil. Y él: "Conozco a un tipo". Me encantaría viajar a Cuba, comprar unos habanos y volver. ¿Para qué? Para venderlo. "Conozco a un tipo".
+
+Me encantaría hacerme un tatuaje. ¿Dónde? En la nuca: "Conozco a un tipo".
+
+Me encantaría quedarme acá para siempre. Y ahí Johnny ya no conocía a nadie. Decía: este es un país muy duro. Pero él vivía como un magnate, cambiaba de carro cada seis meses y seguía pagando el mismo leasing; cobraba un subsidio de desempleo que nadie le controlaba y era con eso que pagaba los moteles donde tirábamos, o las langostas que nos comíamos en Key West, o los VIP passes de los bares de salsa a los que le gustaba llevarme en Calle Ocho.
+
+Johnny vivía a expensas de su mujer –mitad gringa, mitad ecuatoriana– y compraba hasta los calzoncillos de marca: alimentaba rigurosamente su pequeño sueño americano como si temiera que, si un día se olvidaba de hacerlo, se desplomara a sus pies como un pajarito famélico.`,
+    fuente: "Tomado y adaptado de: García Robayo, M. (2015). Hasta que pase un huracán. Bogotá, D. C.: Laguna Libros."
+  },
+  avispa: {
+    etiqueta: "Texto divulgativo",
+    titulo: "Instinto en lugar de lógica",
+    tipo: "texto",
+    contenido: `Cuando llega la hora de poner sus huevos, la avispa Sphex construye una pequeña madriguera para este propósito y sale en la búsqueda de un grillo al cual pica de manera tal que lo paraliza, pero no lo mata. La avispa lleva al grillo a su madriguera, deja sus huevos, cierra la madriguera y luego se va para no volver. Pasado un tiempo, los huevos crecen y la cría de la avispa se alimenta del grillo paralizado que no se descompone debido a que ha permanecido congelado. Para la mente humana, tal rutina tan organizada y aparentemente llena de propósitos lleva consigo un sabor de lógica y de pensamiento. O por lo menos esto es así hasta que conocemos más detalles.
+
+Por ejemplo, la rutina de la avispa consiste en llevar al grillo hacia la madriguera, dejarlo en la entrada, ir adentro a revisar que todo esté bien, salir y luego dejar el grillo adentro. Si, mientras la avispa está dentro de la madriguera haciendo su inspección preliminar, el grillo es movido algunos centímetros de la entrada, entonces la avispa, al salir de la madriguera, volverá a dejar al grillo de nuevo en la entrada, pero no adentro, y repetirá el procedimiento preparatorio de entrar a la madriguera a revisar que todo esté bien. Si, de nuevo, el grillo es movido unos centímetros de la entrada, la avispa llevará otra vez al grillo hacia la entrada y volverá a entrar a la madriguera para revisarla. La avispa nunca piensa en llevar al grillo directamente a su madriguera. En una ocasión, este procedimiento fue repetido cuarenta veces, siempre con el mismo resultado.`,
+    fuente: "Tomado y adaptado de: Woolridge, Dean E. (1963). The Machinery of the Brain, New York: McGraw-Hill, pp. 82-83."
+  },
+  reanimacion: {
+    etiqueta: "Infografía (texto discontinuo)",
+    titulo: "Máxima emergencia — Reanimación cardiopulmonar",
+    tipo: "infografia",
+    contenido: `Infografía circular con 8 pasos para actuar ante una emergencia:
+
+1. **PEDIR AYUDA — Llamar a emergencias:** Informar el lugar del accidente, el número de víctimas, qué les pasó y los síntomas. (107 Capital Federal · 911/107 Provincia).
+
+2. **POSICIONAR A LA VÍCTIMA:** Si está boca abajo, girarla boca arriba.
+
+3. **CHEQUEAR SI RESPIRA:** Elevar el mentón con una mano. Con la otra extender la cabeza. Acercar el oído a la boca de la víctima, mirar el pecho, escuchar y sentir si respira. **Si respira, pasar al paso 8.**
+
+4. **REANIMACIÓN PULMONAR — Si no respira, hacer respiración boca a boca:** Con una mano tapar la nariz y extender la cabeza. Con la otra elevar el mentón. Sellar una boca con otra y soplar durante dos segundos y dejar salir el aire. Repetir la maniobra dos veces.
+
+5. **TOMAR EL PULSO:** Controlar cada pocos minutos.
+
+6. **REANIMACIÓN CARDÍACA — Si no tiene pulso:** Buscar el eje del esternón, colocar el talón de la mano sobre el tórax, dos dedos por encima de la unión de las costillas. Apoyar la otra mano encima.
+
+7. **HACER MASAJE CARDÍACO:** Comprimir el tórax entre 4 y 5 cm en forma rítmica 15 veces. Si no respira ni tiene pulso: alternar 2 soplos y 15 compresiones. Efectuar 4 series y chequear si respira y tiene pulso.
+
+8. **SI LA VÍCTIMA REACCIONA:** Ubicarla en posición de recuperación.`,
+    fuente: "Fuente: Asociación Metropolitana de Medicina del Deporte / Consejo Nacional de Resucitación. Infografía: Paula Simonetti para Clarín.",
+    descripcionExtra: "Nota: Esta es una descripción textual de la infografía original. La infografía es un diagrama circular que conecta los 8 pasos secuencialmente."
+  },
+  nochemartes: {
+    etiqueta: "Crónica",
+    titulo: "Es noche de martes",
+    tipo: "texto",
+    contenido: `Diego lava lechuga. Yo corto cebollas, pico tomates, controlo una salsa. Abrimos un vino. Después de comer, cruza sus cubiertos y me dice que qué bien cocino. Que soy rebuena ama de casa. Ahora –mucha confianza y años juntos– sólo finjo que me enojo y él, que me conoce, finge que se sorprende con mi ceño fruncido. Sabe que me gusta cocinar y tener la casa ordenada, pero sabe, también, que imagino el infierno bajo la forma de las tareas del hogar como ocupación obligatoria y excluyente. Tenemos cuentas separadas, casa compartida y responsabilidades iguales. En fin: casi. Porque si bien no hay nada que sea tarea exclusiva de Diego, sacar la ropa del tendedero y guardarla en los placares es una de esas cosas que "si-no-las-hago-yo-no-las-hace-nadie". A Diego, simplemente, no le importa ver la ropa colgada durante meses, y yo prefiero que las medias y los calzones no me arruinen la vista del balcón, de modo que una vez por semana me transformo en mi mamá, que volvía del fondo con una parva de sábanas oliendo a sol, y junto la ropa recién lavada.
+
+Cada tanto me canso y revoleo mi derecho a la igualdad, entonces Diego dice con ternura "Sí, gordita, tenés razón", dobla un par de remeras y a la semana otra vez: ahí voy yo, juntando broches. También soy la encargada de la sección "comidas difíciles" (Diego es del Club del Bifecito a la Plancha, si le toca cocinar). Si llego tarde a casa, sobre el pálido desierto de la mesa lucirá, con suerte, el laguito rojo de un tomate cortado al medio. Si es Diego el que llega tarde, de guacamole para arriba habrá de todo. Antes pensaba que estas cosas –el orden, la comida caliente, una casa agradable– tenían que ver con cierta sensibilidad femenina en la que, por cierto, me cuesta creer: tengo amigos varones que viven solos y sus casas son tan agradables como la mía y cocinan mejor que yo. Prefiero pensar que son síntomas –visibles– de mi educación de buen partido: prolija, limpia, ordenada. Cosas que aprendí de mi madre: perfumar la casa con cascarita de naranja, sacar las frazadas al sol.`,
+    fuente: `Tomado de: Leila Guerrero, (2009). "Me gusta ser mujer… y odio a las histéricas", en Frutos extraños, Bogotá, Aguilar. pp. 330-331.`
+  },
+  metodo: {
+    etiqueta: "Texto filosófico",
+    titulo: "Tratado contra el método",
+    tipo: "texto",
+    contenido: `El conocimiento no consiste en una serie de teorías autoconsistentes que tiende a converger en una perspectiva ideal; no consiste en un acercamiento gradual hacia la verdad. Por el contrario, el conocimiento es un océano, siempre en aumento, de alternativas incompatibles entre sí (y tal vez inconmensurables); toda teoría particular, todo cuento de hadas, todo mito, forman parte del conjunto que obliga al resto a una articulación mayor, y todos ellos contribuyen, por medio de este proceso competitivo, al desarrollo de nuestro conocimiento. No hay nada establecido para siempre, ningún punto de vista puede quedar omitido en una explicación comprehensiva (...). Expertos y profanos, profesionales y diletantes, forjadores de utopías y mentirosos, todos ellos están invitados a participar en el debate y a contribuir al enriquecimiento de la cultura.
+
+La tarea del científico no ha de ser por más tiempo "la búsqueda de la verdad", o "la glorificación de dios", o "la sistematización de las observaciones" o "el perfeccionamiento de predicciones". Todas estas cosas no son más que efectos marginales de una actividad a la que se dirige ahora su atención y que consiste en "hacer de la causa más débil la causa más fuerte", como dijo el sofista, "por ello en apoyar el movimiento de conjunto".`,
+    fuente: "Tomado y adaptado de: Paul Feyerabend (1986). Tratado contra el método. Madrid: Tecnos, pp.14-15."
+  },
+  calvin: {
+    etiqueta: "Historieta (texto discontinuo)",
+    titulo: "Calvin & Hobbes — Puesto de limonada",
+    tipo: "imagen",
+    contenido: `Historieta de Calvin & Hobbes (Bill Watterson). Calvin monta un puesto con el letrero "LEMONADE $15.99 GLASS". Una niña se acerca y se desarrolla el siguiente diálogo:
+
+— **Niña:** ¿15 dólares por un vaso?
+— **Calvin:** Sí, 15 dólares. ¿Quieres uno?
+— **Niña:** ¿Pero cómo justificas 15 dólares por una limonada?
+— **Calvin:** Ley de la oferta y la demanda.
+— **Niña:** ¿¡Pero dónde está la demanda?! ¡No veo ninguna demanda!
+— **Calvin:** ¡Hay muchísima demanda!
+— **Calvin:** ¡Claro! Como único accionista en esta empresa, ¡¡DEMANDO enormes beneficios por mi inversión!!
+— **Calvin:** Y como presidente de esta empresa, ¡DEMANDO un salario anual exorbitante!
+— **Calvin:** Y como soy mi propio empleado, ¡DEMANDO un alto salario y toda clase de beneficios que la compañía pueda dar! ¡Y además hay gastos indirectos y costos de producción elevados!
+— **Niña:** Sí, pero eso es solo un limón en agua del grifo.
+— **Calvin:** Ya, pero tengo que recortar gastos de algún sitio si quiero ser competitivo.
+— **Niña:** ¿Y si me enfermo por beber "eso"?
+— **Calvin:** "No hay garantías" es nuestro lema… Además debería cobrarla más cara si tuviera que cumplir con sanidad y medio ambiente.
+— **Niña:** ¡Tú estás mal de la cabeza! Me voy a casa a beber lo que sea.
+— **Calvin:** ¡Vale! ¡Déjame sin trabajo y sin negocio! ¡La gente anti-sistema como tú es quien arruina la economía!
+
+(Calvin queda solo en su puesto. Al final, su madre dice: "NECESITO UN SUBSIDIO").`,
+    fuente: "Tomado de: http://www.pinterest.com/pin/256001560040423950/ · Calvin & Hobbes, Bill Watterson."
+  },
+  angel: {
+    etiqueta: "Caricatura",
+    titulo: "Caricatura de Quino — El ángel linchado",
+    tipo: "imagen",
+    contenido: `Caricatura de Quino. La escena muestra a un ángel de aspecto angelical (con alas) tendido en el suelo, rodeado de una multitud hostil. Varias personas del grupo sostienen palos y herramientas con expresión amenazante o indiferente. En primer plano, un reportero con micrófono y audífonos entrevista a una persona de la multitud.
+
+**Leyenda bajo la imagen:**
+
+"— LLEGÓ HABLANDO DE COSAS MUY RARAS,…BONDAD, AMOR, TOLERANCIA, CARIDAD, CUANDO AQUÍ LO QUE NECESITAMOS ES SEGURIDAD, CASA, PAN Y TRABAJO. PERO LO QUE NOS HIZO SOSPECHAR ENSEGUIDA DE ÉL ES QUE NO RECORDAMOS HABERLO VISTO SIQUIERA UNA VEZ EN TELEVISIÓN."`,
+    fuente: "Quino. (2011). Tomado de LITERATURA+TECNOLOGÍA+JÓVENES. http://literatura-tecnologia-jovenes.blogspot.com.co"
+  },
+  granhermano: {
+    etiqueta: "Texto literario",
+    titulo: "Gran Hermano",
+    tipo: "texto",
+    contenido: `*1984 es una novela futurista que tiene lugar en una sociedad totalitaria. Los ciudadanos de esta sociedad son controlados por una figura omnipresente conocida como el Gran Hermano. En el siguiente apartado, un miembro defensor del orden le explica al protagonista el principal propósito del régimen.*
+
+No habrá lealtad; no existirá más fidelidad que la que se debe al Partido, ni más amor que el amor al Gran Hermano. No habrá risa, excepto la risa triunfal cuando se derrota a un enemigo. No habrá arte, ni literatura, ni ciencia. No habrá ya distinción entre la belleza y la fealdad. Todos los placeres serán destruidos. Pero siempre, no lo olvides, Winston, siempre habrá el afán de poder, la sed de dominio, que aumentará constantemente y se hará cada vez más sutil. Siempre existirá la emoción de la victoria, la sensación de pisotear a un enemigo indefenso. Si quieres hacerte una idea de cómo será el futuro, figúrate una bota aplastando un rostro humano... incesantemente.`,
+    fuente: "Tomado y adaptado de: Orwell, George. 1984. Barcelona: Ediciones Destino. 2008."
+  },
+  fotografia: {
+    etiqueta: "Ensayo",
+    titulo: "Sobre la fotografía",
+    tipo: "texto",
+    contenido: `Si las fotografías permiten la posesión imaginaria de un pasado irreal, también ayudan a tomar posesión de un espacio donde la gente está insegura. Así, la fotografía se desarrolla en conjunción con una de las actividades modernas más características: el turismo. Por primera vez en la historia, grupos numerosos de gente abandonan sus entornos habituales por breves periodos. Parece decididamente anormal viajar por placer sin llevar una cámara. Las fotografías son la prueba irrecusable de que se hizo la excursión, se cumplió el programa, se gozó del viaje. Las fotografías documentan secuencias de consumo realizadas en ausencia de la familia, los amigos, los vecinos. Pero la dependencia de la cámara, en cuanto aparato que da realidad a las experiencias, no disminuye cuando la gente viaja más. El acto de fotografiar satisface las mismas necesidades para los cosmopolitas que acumulan trofeos fotográficos de su excursión en barco por el Nilo o sus catorce días en China, que para los turistas de clase media que hacen instantáneas de la Torre Eiffel o las cataratas del Niágara.
+
+El acto fotográfico, un modo de certificar la experiencia, es también un modo de rechazarla: cuando se confina a la búsqueda de lo fotogénico, cuando se convierte la experiencia en una imagen, un recuerdo. El viaje se transforma en una estrategia para acumular fotos. La propia actividad fotográfica es tranquilizadora, y mitiga esa desorientación general que se suele agudizar con los viajes. La mayoría de los turistas se sienten obligados a poner la cámara entre ellos y toda cosa destacable que les sale al paso. Al no saber cómo reaccionar, hacen una foto. Así, la experiencia cobra forma: alto, una fotografía, adelante. El método seduce sobre todo a gente subyugada a una ética de trabajo implacable: alemanes, japoneses y estadounidenses. El empleo de una cámara atenúa su ansiedad provocada por la inactividad laboral cuando están en vacaciones y presuntamente divirtiéndose. Cuentan con una tarea que parece una simpática imitación del trabajo: pueden hacer fotos.`,
+    fuente: "Tomado y adaptado de: Sontag, S. (2009). Sobre la fotografía. Barcelona: Debolsillo."
+  },
+  cronica: {
+    etiqueta: "Texto histórico",
+    titulo: "Entre la crónica y la ideología",
+    tipo: "texto",
+    contenido: `Fray Pedro de Aguado fue un misionero español que vivió en el Nuevo Reino de Granada entre 1560 y 1590, aproximadamente. Se le atribuye la autoría de la Recopilación historial, un extenso compendio de crónicas donde se refieren los hechos de la temprana colonización española en los actuales territorios de Colombia y Venezuela. Las narraciones de la Recopilación giran alrededor de la entrada de los colonizadores españoles en territorios del "Nuevo Mundo", del sometimiento de sus pobladores ancestrales y la subsiguiente fundación de ciudades coloniales, ofreciendo por lo general descripciones de las sociedades indígenas y su entorno natural. En el relato de las campañas del capitán Galarza y sus soldados en los actuales territorios del Tolima, Aguado se refiere de esta manera a los indios de la región:
+
+*"Son estos indios de Ibagué grandes carniceros de carne humana y de cualquier otra carne; tienen algodón, aunque poco, de que hacen algunas mantas para su vestir; las indias son muy feas, y traen en la cabeza unos bonetes de venado con que aprietan y axen los cabellos; no hay entre ellos caciques, como entre otros indios, mas son mandados de algunos indios principales que entre ellos hay, a los cuales obedecen cuando les parece y les da gusto. Es tierra muy áspera y fragosa, en la que estos indios habitan, y todas sierras peladas."*
+
+En su estudio *Los indios medievales de fray Pedro de Aguado*, el historiador Jaime Humberto Borja sostuvo que la Recopilación historial no puede ser tomada como una fuente fiable para el conocimiento de los eventos históricos; ante todo, debe asumirse como un texto que respondía ideológica y culturalmente a una tradición europea que poco tenía que ver con el mundo que pretendía representar: el del indígena y su entorno natural. Frente a descripciones como la que acabamos de citar, afirma Borja que el de Aguado "es un indio retórico, que surge de una realidad textual y no de una realidad aprehendida por la experiencia". Además, la construcción narrativa del indio de la crónica de Aguado reúne imágenes conocidas por la tradición cristiana y los imaginarios bíblicos: "El canibalismo, las exacerbadas costumbres, la fiereza de sus armas, su alianza con traidores, el engaño. En el indio recae la descripción de los vicios físicos y morales de toda la extensión natural. (…) Para reafirmar sus posiciones, Aguado presenta una naturaleza tan salvaje como sus habitantes".`,
+    fuente: "Tomado y adaptado de: Borja Gómez, J. H. (2002). Los indios medievales de fray Pedro de Aguado: construcción del idólatra y escritura de la historia en una crónica del siglo XVI."
+  },
+  caricatura_quino: {
+    etiqueta: "Caricatura",
+    titulo: "Caricatura de Quino — A mí no me grite",
+    tipo: "imagen",
+    contenido: `Caricatura de Quino. La escena muestra el interior de una casa con una decoración muy recargada: paredes cubiertas de cuadros pequeños y papel tapiz con patrones, piso de baldosas, techo con paneles. En el centro, un padre sentado regaña a un niño pequeño que está jugando en el piso con un dibujo a sus pies. El padre levanta la mano con un gesto de autoridad. Una mujer (la madre) observa la escena desde la derecha. La saturación visual del cuarto contrasta con la simpleza del dibujo del niño en el piso.`,
+    fuente: "Tomado de: Quino (1972). Caricatura. A mí no me grite. Buenos Aires: Lumen."
+  },
+  thoreau: {
+    etiqueta: "Texto filosófico-político",
+    titulo: "Del deber de la desobediencia civil (1849)",
+    tipo: "texto",
+    contenido: `Creo de todo corazón en el lema "El mejor gobierno es el que tiene que gobernar menos", y me gustaría verlo hacerse efectivo más rápida y sistemáticamente. Bien llevado, finalmente resulta en algo en lo que también creo: "El mejor gobierno es el que no tiene que gobernar en absoluto". Y cuando los pueblos estén preparados para ello, ése será el tipo de gobierno que tengan. En el mejor de los casos, el gobierno no es más que una conveniencia, pero en su mayoría los gobiernos son inconvenientes y todos han resultado serlo en algún momento. Las objeciones que se han hecho a la existencia de un ejército permanente, que son varias y de peso, y que merecen mantenerse, pueden también por fin esgrimirse en contra del gobierno. El ejército permanente es sólo el brazo del gobierno establecido. El gobierno en sí, que es únicamente el modo escogido por el pueblo para ejecutar su voluntad, está igualmente sujeto al abuso y la corrupción antes de que el pueblo pueda actuar a través suyo.
+
+Somos testigos de la actual guerra con México, obra de unos pocos individuos comparativamente, que utilizan como herramienta al gobierno actual; en principio, el pueblo no habría aprobado esta medida. Pero, para hablar en forma práctica y como ciudadano, a diferencia de aquellos que se llaman "antigobiernistas", yo pido, no como "antigobiernista" sino como ciudadano, y de inmediato, un mejor gobierno. Permítasele a cada individuo dar a conocer el tipo de gobierno que lo impulsaría a respetarlo y eso ya sería un paso ganado para obtener ese respeto. Después de todo, la razón práctica por la cual, una vez que el poder está en manos del pueblo, se le permite a una mayoría, y por un período largo de tiempo, regir, no es porque esa mayoría esté tal vez en lo correcto, ni porque le parezca justo a la minoría, sino porque físicamente son los más fuertes. Pero un gobierno en el que la mayoría rige en todos los casos no se puede basar en la justicia. No es deseable cultivar respeto por la ley más de por lo que es correcto. La única obligación a la que debo someterme es a la de hacer siempre lo que creo correcto. La ley nunca hizo al hombre un ápice más justo, y a causa del respeto por ella, aún el hombre bien dispuesto se convierte a diario en un agente de la injusticia.`,
+    fuente: "Henry David Thoreau. Tomado y adaptado de: http://thoreau.eserver.org/spanishcivil.html"
+  },
+  escolios: {
+    etiqueta: "Aforismos",
+    titulo: "Escolios sobre filosofía",
+    tipo: "texto",
+    contenido: `» Las filosofías comienzan en filosofía y acaban en retórica. (59)
+
+» La filosofía es actitud solitaria.
+
+» La adhesión de cualquier muchedumbre a una doctrina la convierte en mitología. (110)
+
+» Los sistemas filosóficos difieren los unos de los otros menos en la manera de resolver que en la manera de escamotear los problemas. (117)
+
+» Los que se ocupan de filosofía no la tomarían tan en serio, si generalmente no vivieran de ella como profesión. (130)
+
+» En filosofía lo que no sea fragmento es estafa. (162)`,
+    fuente: "Tomado de: Gómez Dávila, N. (1992). Sucesivos escolios a un texto implícito. Bogotá: Instituto Caro y Cuervo."
+  },
+  chimpances: {
+    etiqueta: "Texto científico",
+    titulo: "Aprendiendo de los chimpancés",
+    tipo: "texto",
+    contenido: `Cuando inicié mi estudio sobre chimpancés salvajes en 1960, en el Centro de Investigaciones Gombe Stream, no era permitido, al menos no en los círculos de etología, hablar sobre la mente de los animales. Solo los humanos tienen mentes. Ni tampoco era del todo correcto hablar acerca de la personalidad de los animales. Por supuesto que todos sabían que ellos tienen sus caracteres únicos —todos los que alguna vez hubieran tenido un perro u otra mascota eran conscientes de ello—. Pero los etólogos, luchando por hacer de la suya una ciencia 'dura', se mantuvieron alejados de la tarea de tratar de explicar esas cosas objetivamente. Un respetado etólogo, al mismo tiempo que reconocía que había una "variabilidad entre animales individuales", escribió que era mejor que este hecho se "escondiera debajo de la alfombra".
+
+Qué ingenua era. Como no había tenido una educación científica de pregrado, no me di cuenta de que en teoría los animales no debían tener personalidades, pensar o sentir emociones o dolor. No tenía idea de que hubiera sido más apropiado —una vez que llegara a conocerla o conocerlo— asignarle a cada uno de los chimpancés un número en lugar de un nombre. No me di cuenta de que no era científico discutir sobre el comportamiento en términos de motivación o propósito. No era respetable, en círculos científicos, hablar sobre la personalidad de los animales. Eso era algo que estaba reservado para los humanos. Tampoco tenían mente, así que no eran capaces de pensamiento racional. Y hablar acerca de sus emociones era sentirse culpable del peor tipo de antropomorfismo (atribuirles características humanas a los animales).
+
+En los comentarios editoriales al primer artículo que escribí con fines de publicación, se exigía que todo "él" o "ella" fuera reemplazado por "ello" y que todo "quien" fuera reemplazado por "que". Enfurecida, taché uno a uno los "ello" y "que" y reescribí los pronombres originales. Dado que no me interesaba forjarme un nicho personal en el mundo de la ciencia, sino que simplemente quería vivir entre chimpancés y aprender sobre ellos, la posible reacción del editor de la muy ilustrada revista me era indiferente. El artículo, cuando finalmente fue publicado, les confirió a los chimpancés la dignidad de sus géneros correspondientes y correctamente los promovió del estatus de meras "cosas" a su existencia esencial.`,
+    fuente: `Tomado y adaptado de: Goodall, Jane. "Aprendiendo de los chimpancés: un mensaje que los humanos pueden entender". En: Science, diciembre, 1998: Vol. 282 no. 5397 pp. 2184-2185.`
+  },
+  crates: {
+    etiqueta: "Historieta",
+    titulo: "Historieta — Diálogo entre filósofos",
+    tipo: "imagen",
+    contenido: `Historieta en 6 viñetas. Diálogo entre dos filósofos de apariencia griega (túnicas blancas, barbas). Uno de ellos, llamado Crates, lleva un bastón.
+
+**Viñeta 1 (Crates):** — ¿Pero a qué viene toda esta cháchara del huevo?
+**Viñeta 1 (otro filósofo):** — Me enseñaste a usar la razón como una forma de libertad. Y ahora, Crates, me libero de ti.
+
+**Viñeta 2 (Crates):** — ¿Qué dices?
+
+**Viñeta 3 (el filósofo):** — Que no puedes jalar a un filósofo de la ropa, sino de los oídos: mi cuerpo puede seguirte, pero mi mente ya no.
+
+**Viñetas 4-6 (el filósofo, en primer plano):**
+— Todo lo que existe se divide en lo que depende de nosotros y en lo que no.
+— De nosotros dependen el juicio, el deseo y todo lo que hacemos.
+— Por eso depende de mí separarme de ti, Crates.`,
+    fuente: "Tomado de: Barrero, Tomás y Henao, Alejandro (2014). Historia de un olvido. Bogotá: Editorial Dendros."
+  },
+  arte: {
+    etiqueta: "Ensayo sobre arte",
+    titulo: "La historia del arte",
+    tipo: "texto",
+    contenido: `A mucha gente le gusta ver en los cuadros lo que también le gustaría ver en la realidad. Se trata de una preferencia perfectamente comprensible. A todos nos atrae lo bello en la naturaleza y agradecemos a los artistas que lo recojan en sus obras. Esos mismos artistas no nos censurarían por nuestros gustos. Cuando el gran artista flamenco Rubens dibujó a su hijo, estaba orgulloso de sus agradables acciones y deseaba que también nosotros admiráramos al pequeño. Pero esta inclinación a los temas bonitos y atractivos puede convertirse en nociva si nos conduce a rechazar obras que representan asuntos menos agradables. El gran pintor alemán Alberto Durero seguramente dibujó a su madre con tanta devoción y cariño como Rubens a su hijo. Su verista estudio de la vejez y la decrepitud puede producirnos tan viva impresión que nos haga apartar los ojos de él y, sin embargo, si reaccionamos contra esta primera aversión, quedaremos recompensados con creces, pues el dibujo de Durero, en su tremenda sinceridad, es una gran obra. En efecto, de pronto descubrimos que la hermosura de un cuadro no reside realmente en la belleza de su tema. No sé si los golfillos que el pintor español Murillo se complacía en pintar eran estrictamente bellos o no, pero tal como fueron pintados por él, poseen desde luego gran encanto.`,
+    fuente: "Tomado de: Gombrich, E. H. (2003). La historia del arte. Madrid: Random House Mondadori."
+  },
+  giges: {
+    etiqueta: "Texto filosófico clásico",
+    titulo: "El Anillo de Giges: La Naturaleza de la Justicia",
+    tipo: "texto",
+    contenido: `Nadie es justo por voluntad sino porque no tiene el poder de cometer injusticias. Esto lo percibiremos mejor si nos imaginamos las cosas del siguiente modo: demos tanto al justo como al injusto el poder de hacer lo que cada uno de ellos quiere, y a continuación sigámoslos para observar hasta dónde lo lleva a cada uno el deseo. Entonces sorprenderemos al justo tomando el mismo camino que el injusto, siguiendo sus propios intereses, lo que toda criatura persigue por naturaleza como un bien, pero que la fuerza de la ley obliga a seguir el camino del respeto por la igualdad.
+
+El poder del que hablo sería efectivo al máximo si aquellos hombres adquirieran una fuerza tal como la que se dice que cierta vez tuvo Giges, el antepasado del lidio. Giges era un pastor que servía al entonces rey de Lidia. Un día sobrevino una gran tormenta y un terremoto que rasgó la tierra y produjo un abismo en el lugar en que Giges llevaba el ganado a pastorear. Asombrado al ver esto, descendió al abismo y halló, entre otras maravillas que narran los mitos, un caballo de bronce, hueco y con ventanillas, a través de las cuales divisó adentro un cadáver de tamaño más grande que el de un hombre, según parecía, y que no tenía nada excepto un anillo de oro en la mano. Giges le quitó el anillo y salió del abismo. Ahora bien, los pastores hacían su reunión habitual para dar al rey el informe mensual concerniente a la hacienda, cuando llegó Giges llevando el anillo. Tras sentarse entre los demás, casualmente volvió el engaste del anillo hacia el interior de su mano. Al suceder esto se tornó invisible para los que estaban sentados allí, quienes se pusieron a hablar de él como si se hubiera ido. Giges se asombró, y luego, examinando el anillo, dio vuelta al engaste hacia afuera y tornó a hacerse visible. Al advertirlo, experimentó con el anillo para ver si tenía tal propiedad, y comprobó que así era: cuando giraba el engaste hacia adentro, su dueño se hacía invisible, y cuando lo giraba hacia afuera, se hacía visible. En cuanto se hubo cerciorado de ello, maquinó el modo de formar parte de los que fueron a la residencia del rey como informantes y, una vez allí, sedujo a la reina y con ayuda de ella mató al rey y se apoderó del reino.
+
+Por consiguiente, si hubiese dos anillos como el de Giges y se diera uno a un hombre justo y otro a uno injusto, ninguno perseveraría en la justicia ni soportaría abstenerse de bienes ajenos, cuando podría tanto apoderarse impunemente de lo que quisiera del mercado, como, al entrar en las casas, acostarse con la mujer que prefiriera, y tanto matar a unos como librar de las cadenas a otros, según su voluntad, y hacer todo como si fuera igual a un dios entre los hombres. En esto, el hombre justo no haría nada diferente del injusto, sino que ambos marcharían por el mismo camino. E incluso se diría que esto es una importante prueba de que nadie es justo si no es forzado a serlo, por no considerarse a la justicia como un bien individual, ya que allí donde cada uno se cree capaz de cometer injusticias, las comete. En efecto, todo hombre piensa que la injusticia le brinda más ventajas individuales que la justicia, y está en lo cierto, si habla de acuerdo con esta teoría.`,
+    fuente: "Tomado de: Platón IV, D. (1986). República, Traducción y notas de C. Eggers Lan, Madrid, Gredos."
+  },
+  matrimonio: {
+    etiqueta: "Artículo de divulgación",
+    titulo: "El matrimonio: más allá del amor",
+    tipo: "texto",
+    contenido: `En nuestra sociedad, se tiende a pensar que el matrimonio, la base de la familia, se sostiene si hay confianza mutua y buena comunicación, así como si ambos miembros de la pareja trabajan unidos para resolver los conflictos y pasan tiempo juntos. En resumen, su piedra angular es un amor maduro y sincero. No obstante, la idea de que este deba ser la razón última del enlace es bastante reciente: aparece en el siglo XVIII y se afianza en el XIX, con el movimiento romántico. Hasta entonces, el matrimonio era ante todo una institución económica y política demasiado trascendente como para dejarla en manos de los dos individuos implicados. En general, resultaba inconcebible que semejante acuerdo se basara en algo tan irracional como el enamoramiento. De hecho, no se inventó ni para que los hombres protegieran a las mujeres ni para que las explotaran. Se trataba de una alianza entre grupos que iba más allá de los familiares más cercanos o incluso los pequeños grupos.
+
+Para las élites, era una manera excelente de consolidar la riqueza, fusionar recursos y forjar uniones políticas. Desde la Edad Media, la dote de boda de la mujer constituía el mayor ingreso de dinero, bienes o tierras que un hombre iba a recibir en toda su vida. Para los más pobres, también suponía una transacción económica que debía ser beneficiosa para la familia. Así, se solía casar al hijo con la hija de quien tenía un campo colindante. El matrimonio se convirtió en la estructura que garantizaba la supervivencia de la familia extendida, que incluye abuelos, hermanos, sobrinos… Al contrario de lo que solemos creer, la imagen del marido trabajando fuera de la casa y la mujer haciéndose cargo de la misma es un producto reciente, de los años 50. Hasta entonces, la familia no se sostenía con un único proveedor, sino que todos sus integrantes contribuían al único negocio de la que esta dependía.
+
+Que el matrimonio no se basara en el amor no quiere decir que las personas no se enamoraran. Sin embargo, en algunas culturas se trata de algo incompatible con el matrimonio. En la China tradicional, por ejemplo, una atracción excesiva entre los esposos era tenida como una amenaza al respeto y solidaridad debida a la familia. Es más, en tal ambiente, la palabra amor solo se aplicaba para describir las relaciones ilícitas. Fue en la década de 1920 cuando se inventó un término para designar el cariño entre cónyuges. Una idea tan radicalmente nueva exigía un vocabulario especial.
+
+Aún hoy, muchas sociedades desaprueban la idea de que el amor sea el centro del matrimonio. Es el caso de los fulbes africanos, del norte de Camerún. "Muchas de sus mujeres niegan vehementemente cualquier apego hacia el marido", asegura Helen A. Regis, del Departamento de Geografía y Antropología de la Universidad Estatal de Luisiana. Otras, en cambio, aprueban el amor entre esposos, pero nunca antes de que el matrimonio haya cumplido su objetivo primordial.`,
+    fuente: `Tomado y adaptado de: Sabadell, Miguel Ángel (2013). "Líos de familias". En: Muy Interesante, No. 384, pp. 72-76.`
+  },
+  transito: {
+    etiqueta: "Infografía (texto discontinuo)",
+    titulo: "Traumatismos causados por el tránsito: los hechos",
+    tipo: "infografia",
+    contenido: `Infografía de la **Organización Mundial de la Salud** sobre accidentes de tránsito en el mundo.
+
+**DATOS GENERALES:**
+• Cada año hay **1,24 millones** de muertes por accidentes de tránsito.
+• Es la **1ª causa de muerte** en el grupo etario de 15-29 años.
+• **3 de cada 4** de los fallecidos en accidentes de tránsito son del sexo masculino (acompañado de 4 figuras humanas: 3 hombres y 1 mujer).
+
+**RELACIÓN VEHÍCULOS / MUERTES:**
+• Los países de ingresos medios solo tienen **la mitad (52%)** de los vehículos existentes en el mundo y, a pesar de eso, sufren el **80%** de las muertes por accidente de tránsito.
+• Muertes por accidentes de tránsito por 100.000 habitantes:
+   – Países de ingresos altos: **8,7**
+   – Países de ingresos medios: **20,1**
+   – Países de ingresos bajos: **18,3**
+• Los países de ingresos medios son los que tienen mayores tasas de mortalidad por accidentes de tránsito.
+
+**POR REGIÓN (muertes por 100.000 habitantes):**
+• Europa: 10,3
+• Américas: 16,1
+• Mediterráneo Oriental: 21,3
+• África: 24,1
+• Asia Sudoriental: 18,5
+• Pacífico Occidental: 18,5
+• La probabilidad de morir por accidentes de tránsito depende del lugar de residencia.
+
+**POR TIPO DE USUARIO DE LA VÍA:**
+• Peatones: **22%**
+• Ciclistas: **5%**
+• Motociclistas: **23%**
+• El **50%** de los fallecidos por accidentes de tránsito son peatones, ciclistas y motociclistas.`,
+    fuente: "Fuente: Organización Mundial de la Salud. Informe sobre la situación mundial de la seguridad vial 2013. www.who.int"
+  }
+};
+
+const PREGUNTAS = [
+  // ===== JOHNNY (1-3) =====
+  {
+    id: 1,
+    contexto: "johnny",
+    enunciado: `En el último párrafo del texto se utiliza la palabra "famélico" para describir a Johnny. ¿Cuál de los siguientes adjetivos le da un sentido contrario al significado que tiene esta palabra en el texto?`,
+    opciones: ["Magro.", "Enjuto.", "Relleno.", "Esquelético."],
+    correcta: 2, // C
+    afirmacion: "Identifica y entiende los contenidos locales que conforman un texto."
+  },
+  {
+    id: 2,
+    contexto: "johnny",
+    enunciado: "El fragmento lo narra",
+    opciones: [
+      "Un testigo que solo cuenta lo que ve.",
+      "Johnny, el protagonista.",
+      "Un personaje de la historia que cuenta lo que le contaron.",
+      "Alguien que conoce a Johnny."
+    ],
+    correcta: 3, // D
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 3,
+    contexto: "johnny",
+    enunciado: "Desde la información que brinda el texto, ¿cuál de las siguientes palabras describe mejor a Johnny?",
+    opciones: ["Vividor.", "Generoso.", "Trabajador.", "Mezquino."],
+    correcta: 0, // A
+    afirmacion: "Identifica y entiende los contenidos locales que conforman un texto."
+  },
+  // ===== AVISPA (4-5) =====
+  {
+    id: 4,
+    contexto: "avispa",
+    enunciado: "¿Cuál de las siguientes citas refuerza la idea de que el comportamiento de la avispa Sphex no resulta de un proceso de pensamiento racional?",
+    opciones: [
+      `"La avispa lleva al grillo a su madriguera, deja sus huevos, cierra la madriguera y luego se va para no volver".`,
+      `"La avispa nunca piensa en llevar al grillo directamente a su madriguera. En una ocasión, este procedimiento fue repetido cuarenta veces, siempre con el mismo resultado".`,
+      `"Para la mente humana, tal rutina tan organizada y aparentemente llena de propósitos lleva consigo un sabor de lógica y de pensamiento".`,
+      `"Por ejemplo, la rutina de la avispa consiste en llevar al grillo hacia la madriguera, dejarlo en la entrada, ir adentro a revisar que todo esté bien, salir y luego dejar el grillo adentro".`
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 5,
+    contexto: "avispa",
+    enunciado: "¿Cuál de los siguientes enunciados sintetiza el tema principal del texto?",
+    opciones: [
+      "El comportamiento aparentemente inteligente de la avispa Sphex.",
+      "El papel de los grillos en la alimentación de las avispas Sphex.",
+      "La avispa Sphex como un caso que prueba la inteligencia animal.",
+      "Los métodos de crianza y las precauciones de las avispas Sphex."
+    ],
+    correcta: 0, // A
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== REANIMACION (6-8) =====
+  {
+    id: 6,
+    contexto: "reanimacion",
+    enunciado: "De acuerdo con la infografía, ¿en qué momento se requiere proceder a efectuar una reanimación cardíaca?",
+    opciones: [
+      "Después de confirmar que la víctima reacciona.",
+      "Después de comprobar que la víctima no tiene pulso.",
+      "En el momento en que la víctima muestra problemas de respiración.",
+      "En el momento en que la víctima está en posición de recuperación."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 7,
+    contexto: "reanimacion",
+    enunciado: "En caso de que la víctima no respire, ¿qué procedimiento se sugiere seguir en la infografía?",
+    opciones: [
+      "Saltar al paso 5 (tomar el pulso).",
+      "Llamar a un número de emergencias.",
+      "Realizar una respiración boca a boca.",
+      "Llevar a cabo una reanimación cardiopulmonar."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 8,
+    contexto: "reanimacion",
+    enunciado: "De acuerdo con el propósito del texto, ¿cuál de las siguientes opciones NO presenta una buena razón para incluir imágenes en la infografía?",
+    opciones: [
+      "La descripción verbal se debe acompañar de un ejemplo gráfico.",
+      "Se debe ilustrar en qué lugares se puede llevar a cabo la reanimación.",
+      "Se le debe aclarar al lector qué debe hacer en cada etapa de la reanimación.",
+      "Se deben representar los pasos que debe realizar una persona para reanimar a otra."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== NOCHE DE MARTES (9-10) =====
+  {
+    id: 9,
+    contexto: "nochemartes",
+    enunciado: `En el fragmento del texto: "Si llego tarde a casa, sobre el pálido desierto de la mesa lucirá, con suerte, el laguito rojo de un tomate cortado al medio", ¿para qué se utilizan las expresiones "pálido desierto de la mesa" y "laguito rojo de un tomate"?`,
+    opciones: [
+      "Para resaltar el poco esfuerzo de Diego en la cocina.",
+      "Para explicar por qué Diego no se esforzó en la cocina.",
+      "Para justificar el poco esfuerzo de Diego en la cocina.",
+      "Para ilustrar el buen trabajo de Diego en la cocina."
+    ],
+    correcta: 0, // A
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 10,
+    contexto: "nochemartes",
+    enunciado: "En el texto, ¿por qué la narradora finge enojarse cuando Diego le dice que es una buena ama de casa?",
+    opciones: [
+      "Porque no quiere ser catalogada como ama de casa.",
+      "Porque no es cierto que sea una buena ama de casa.",
+      "Porque no le gusta que la comparen con su mamá.",
+      "Porque no siente afecto por las mujeres que son amas de casa."
+    ],
+    correcta: 0, // A
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== METODO (11-12) =====
+  {
+    id: 11,
+    contexto: "metodo",
+    enunciado: "¿Cuál de las siguientes opciones describe mejor la relación entre el contenido del texto y el título?",
+    opciones: [
+      "El texto introduce la propuesta de un nuevo método para la investigación científica, diferente del tradicional.",
+      `El texto ataca diferentes ideas a propósito de qué es aquello en lo que consiste el llamado "método científico".`,
+      "El texto critica concepciones del conocimiento científico, el cual se ha concebido como resultado de un método.",
+      "El texto argumenta a favor de la pluralidad de métodos disponibles para que cada ciencia alcance sus verdades."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 12,
+    contexto: "metodo",
+    enunciado: `El autor del texto aplica a la filosofía de la ciencia el principio del liberalismo, según el cual "todos los ciudadanos son iguales ante la ley y ante el Estado". De acuerdo con esto, ¿cuál de las siguientes afirmaciones refleja de manera más directa la influencia de las ideas liberales?`,
+    opciones: [
+      "La tarea del científico no ha de ser por más tiempo la glorificación de dios.",
+      "Toda teoría particular, todo cuento de hadas, todo mito, forman parte del conocimiento.",
+      "Hacer de la causa más débil la causa más fuerte, por ello en apoyar el movimiento de conjunto.",
+      "El conocimiento no consiste en una serie de teorías autoconsistentes que tiende a converger en una perspectiva ideal."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== CALVIN (13) =====
+  {
+    id: 13,
+    contexto: "calvin",
+    enunciado: "En la historieta, el niño intenta justificar el alto precio de la limonada recurriendo a:",
+    opciones: [
+      "Argumentos absurdos pero consistentes.",
+      "Un modelo económico fiel a la realidad.",
+      "Una ley de mercado que no existe.",
+      "Su propia versión de la economía."
+    ],
+    correcta: 3, // D
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== ANGEL (14) =====
+  {
+    id: 14,
+    contexto: "angel",
+    enunciado: "¿Cuál de los siguientes enunciados describe mejor la caricatura?",
+    opciones: [
+      "El pueblo hace justicia por su propia mano.",
+      "El linchamiento de un ángel.",
+      "Entrevista con el asesino.",
+      "Un ángel bajó del cielo."
+    ],
+    correcta: 1, // B
+    afirmacion: "Identifica y entiende los contenidos locales que conforman un texto."
+  },
+  // ===== GRAN HERMANO (15-16) =====
+  {
+    id: 15,
+    contexto: "granhermano",
+    enunciado: "Teniendo en cuenta la información que brinda el texto, ¿cuál de las siguientes afirmaciones es compatible con las políticas del Partido?",
+    opciones: [
+      "El pueblo debe mantenerse unido.",
+      "La individualidad debe ser eliminada.",
+      "El poder está en ser fiel a uno mismo.",
+      "Un pueblo ignorante es más poderoso."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 16,
+    contexto: "granhermano",
+    enunciado: `En el texto, la frase "figúrate una bota aplastando un rostro humano…incesantemente"`,
+    opciones: [
+      "explica los planes para el futuro del régimen.",
+      "ejemplifica las ideas transmitidas al pueblo.",
+      "expone el verdadero propósito del sistema de gobierno.",
+      "ilustra las condiciones de los ciudadanos bajo el régimen."
+    ],
+    correcta: 3, // D
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== FOTOGRAFIA (17-18) =====
+  {
+    id: 17,
+    contexto: "fotografia",
+    enunciado: `En el fragmento tomado del texto: "Las fotografías son la prueba irrecusable de que se hizo la excursión, se cumplió el programa, se gozó del viaje", ¿cuál de las siguientes palabras es un sinónimo de la palabra 'irrecusable'?`,
+    opciones: ["Inminente.", "Concluyente.", "Irremplazable.", "Cuestionable."],
+    correcta: 1, // B
+    afirmacion: "Identifica y entiende los contenidos locales que conforman un texto."
+  },
+  {
+    id: 18,
+    contexto: "fotografia",
+    enunciado: `Considere el siguiente resumen del texto: "La autora analiza la relación entre el turismo y la fotografía, teniendo en cuenta que los cosmopolitas ven en sus viajes al acto de fotografiar como una necesidad. Según ella, ese acto acaba por convertirse en una práctica trivial con la que solo se busca mitigar la desorientación general que causan los viajes. Así, la fotografía se convierte para los cosmopolitas japoneses, estadounidenses y alemanes en una especie de reemplazo del trabajo al que están acostumbrados". El anterior resumen se puede describir como inadecuado porque`,
+    opciones: [
+      "expone ideas contrarias a las afirmaciones principales del texto.",
+      "se centra en un tipo particular de turistas y no en los turistas en general.",
+      "omite el tono irónico y burlón con que la autora se refiere al arte de la fotografía.",
+      "se detiene en presentar información en extremo detallada y secundaria del texto."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== CRONICA (19-20) =====
+  {
+    id: 19,
+    contexto: "cronica",
+    enunciado: "De acuerdo con el texto, se puede afirmar que la descripción de los indios de Ibagué hecha por Aguado corresponde a",
+    opciones: [
+      `un periodo anterior a la llegada de los españoles al continente americano, pues presenta a los indígenas en una situación de "salvajismo" absoluto.`,
+      "el proceso de fundación de la ciudad colonial de Ibagué, pues la dinámica de colonización consistía en fundar las ciudades y luego someter a los indígenas de la zona.",
+      `la etapa de "conquista" de los territorios que se anexarían a la colonia neogranadina, pues la descripción es parte de un relato de una campaña militar.`,
+      "un periodo histórico indeterminado, pues el texto no ofrece información cronológica que permita identificar el momento que corresponde a la descripción."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 20,
+    contexto: "cronica",
+    enunciado: "De acuerdo a su contenido, ¿qué otro título podría ajustarse al texto?",
+    opciones: [
+      "Civilización y barbarie en la colonización española.",
+      "Fray Pedro de Aguado y la construcción retórica del indígena.",
+      "El canibalismo ritual en la crónica de fray Pedro de Aguado.",
+      "La influencia de los autores clásicos en los cronistas neogranadinos: el caso de Aguado."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== QUINO CARICATURA (21) =====
+  {
+    id: 21,
+    contexto: "caricatura_quino",
+    enunciado: "¿En cuál de los siguientes contextos se inscribe mejor la caricatura?",
+    opciones: ["Anuncio publicitario.", "Reportaje gráfico.", "Humor gráfico.", "Sátira política."],
+    correcta: 2, // C
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== THOREAU (22) =====
+  {
+    id: 22,
+    contexto: "thoreau",
+    enunciado: "¿Cuál de los siguientes es un ejemplo que menciona el autor para apoyar su posición frente a los Gobiernos?",
+    opciones: ["La guerra con México.", "Los abusos del ejército.", "La tiranía de las mayorías.", "La debilidad de las minorías."],
+    correcta: 0, // A
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== ESCOLIOS (23) =====
+  {
+    id: 23,
+    contexto: "escolios",
+    enunciado: `De acuerdo con el enunciado "Los sistemas filosóficos difieren los unos de los otros menos en la manera de resolver que en la manera de escamotear los problemas", ¿cuál es la principal diferencia entre un sistema filosófico y otro?`,
+    opciones: [
+      "La manera de plantear los problemas.",
+      "La manera de resolver los problemas.",
+      "La manera de esquivar los problemas.",
+      "La manera de burlarse de los problemas."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== CHIMPANCES (24) =====
+  {
+    id: 24,
+    contexto: "chimpances",
+    enunciado: `Considere el siguiente enunciado tomado del texto: "No me di cuenta de que no era científico discutir sobre el comportamiento en términos de motivación o propósito". ¿Qué prejuicio cuestiona la autora por medio del enunciado anterior?`,
+    opciones: [
+      "Los animales tienen mente y, por tanto, deben tratarse como seres con personalidades o emociones.",
+      `La etología es una ciencia "dura" que se esfuerza por mantener a raya las explicaciones subjetivas.`,
+      "Las explicaciones científicas sobre el comportamiento no deben tener en cuenta la intención al explicar la conducta.",
+      "La variabilidad entre animales individuales es un hecho contingente que la etología no debe considerar."
+    ],
+    correcta: 2, // C
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== CRATES (25) =====
+  {
+    id: 25,
+    contexto: "crates",
+    enunciado: "Teniendo en cuenta los planteamientos dados en la historieta, ¿cuál de los siguientes enunciados contradice la tesis central del texto?",
+    opciones: [
+      "No todo se divide entre lo que depende y lo que no depende de nosotros.",
+      "Alejarnos de alguien no depende de nosotros mismos.",
+      "La mente de un filósofo funciona de la misma manera que su cuerpo.",
+      "El juicio y el deseo no dependen de nosotros."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  // ===== ARTE (26-28) =====
+  {
+    id: 26,
+    contexto: "arte",
+    enunciado: "En el texto, ¿para qué el autor hace referencia a Rubens?",
+    opciones: [
+      "Para mostrar que a todos nos atrae lo bello y por fortuna el arte lo recoge en la pintura.",
+      "Para resaltar que el público siempre exige que el artista refleje la realidad en los cuadros.",
+      "Para manifestar que algunos artistas plasman en sus obras lo que nos gusta ver en la realidad.",
+      "Para concluir que la inclinación en el arte por los temas bonitos y atractivos es bastante nociva."
+    ],
+    correcta: 2, // C
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 27,
+    contexto: "arte",
+    enunciado: "¿Cuál de los siguientes enunciados expresa un juicio de valor presente en el texto?",
+    opciones: [
+      "Mientras Rubens dibujó la juventud, Durero dibujó la vejez.",
+      "Los golfillos del pintor español Murillo tienen gran encanto.",
+      "Rubens estaba orgulloso de su hijo y deseaba que lo admiráramos.",
+      "Para el público, la hermosura de un cuadro reside en la belleza de su tema."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 28,
+    contexto: "arte",
+    enunciado: "¿Cuál de los siguientes títulos podría ser el más adecuado para el texto anterior?",
+    opciones: [
+      "En defensa del mal gusto en el arte.",
+      "El arte como modelo de la realidad.",
+      "La representación de la belleza en el arte.",
+      "Rubens, Durero y Murillo: el arte de la pintura."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== GIGES (29-33) =====
+  {
+    id: 29,
+    contexto: "giges",
+    enunciado: "¿Cuál de las siguientes afirmaciones contradice las ideas que presenta el autor?",
+    opciones: [
+      "Algunas personas actúan justamente a pesar de poder actuar de manera injusta.",
+      "La injusticia, contrariamente a la justicia, es natural en el ser humano.",
+      "Actuar con justicia brinda menos ventajas que hacerlo con injusticia.",
+      "La injusticia, contrariamente a la justicia, se comete voluntariamente."
+    ],
+    correcta: 0, // A
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 30,
+    contexto: "giges",
+    enunciado: `De los siguientes enunciados, ¿cuál presenta un supuesto subyacente a la afirmación "Todo hombre piensa que la injusticia le brinda más ventajas individuales que la justicia, y está en lo cierto, si habla de acuerdo con esta teoría"?`,
+    opciones: [
+      "La injusticia brinda las mismas ventajas individuales que la justicia.",
+      "La justicia, al igual que la injusticia, brinda ventajas individuales.",
+      "La injusticia, a diferencia de la justicia, brinda pocas ventajas individuales.",
+      "La justicia no brinda ninguna de las ventajas individuales que la injusticia brinda."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 31,
+    contexto: "giges",
+    enunciado: "¿Cuál de las siguientes afirmaciones constituye una razón a favor de la tesis principal del texto anterior, a saber, que cuando alguien actúa justamente lo hace por obligación y no voluntariamente?",
+    opciones: [
+      "La gente se ve obligada a actuar justamente.",
+      "Solo la igualdad garantiza el respeto por la ley.",
+      "La injusticia brinda las mismas ventajas individuales que la justicia.",
+      "Siempre que una persona cuente con la libertad para cometer injusticias lo hará."
+    ],
+    correcta: 3, // D
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 32,
+    contexto: "giges",
+    enunciado: "¿Cuál de las siguientes afirmaciones sintetiza adecuadamente las ideas contenidas en el primer párrafo del texto?",
+    opciones: [
+      "El que alguien sea justo es un deber que se deriva de la conciencia moral que tienen todos los hombres.",
+      "El que alguien sea justo resulta de una imposición, pues toda persona sin las restricciones y exigencias de la ley buscará satisfacer sus deseos.",
+      "La justicia es una ilusión, ya que lo natural es que una persona busque cumplir sus deseos y alcanzar sus intereses, sin reparar en la igualdad que exige la ley.",
+      "La justicia es un ideal inalcanzable, ya que toda persona, por más justa que aparente ser, tiene intereses propios que pueden llevarla a cometer injusticias."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 33,
+    contexto: "giges",
+    enunciado: "Dada la estructura del texto anterior, ¿qué propósito general tiene el autor al introducir el relato sobre el anillo de Giges, y cómo lo alcanza?",
+    opciones: [
+      "Promover en la audiencia la idea de que es más ventajoso seguir el camino de la injusticia. El caso de Giges muestra cómo obtuvo beneficios gracias al comportamiento injusto que le posibilitó el anillo.",
+      "Convencer a la audiencia de que todo hombre cometerá injusticias cuando tenga la oportunidad. Así lo hizo Giges una vez descubrió el poder que le otorgaba el anillo.",
+      "Reforzar en la audiencia la idea de que todos cometemos injusticias. El caso de Giges ilustra cómo las personas aparentemente justas en realidad cometen grandes injusticias.",
+      "Persuadir a la audiencia de que actuar justamente requiere mucha fuerza de voluntad. En el caso de Giges, la tentación derivada del poder del anillo doblegó su voluntad."
+    ],
+    correcta: 1, // B
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== MATRIMONIO (34-41) =====
+  {
+    id: 34,
+    contexto: "matrimonio",
+    enunciado: "Para el autor, el amor o el enamoramiento son",
+    opciones: [
+      "la base fundamental del matrimonio y de la familia.",
+      "una atracción que amenaza al respeto y la solidaridad debida a la familia.",
+      "unas ideas vinculadas recientemente al matrimonio y la familia.",
+      "unos sentimientos irracionales que contradicen el deber ser del matrimonio."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 35,
+    contexto: "matrimonio",
+    enunciado: `En el fragmento tomado del texto: "Que el matrimonio no se basara en el amor no quiere decir que las personas no se enamoraran. Sin embargo, en algunas culturas se trata de algo incompatible con el matrimonio", ¿qué función cumple el conector "Sin embargo"?`,
+    opciones: [
+      "Introducir un nuevo tema de reflexión.",
+      "Negar información suministrada previamente.",
+      "Agregar nuevos detalles acerca de lo dicho anteriormente.",
+      "Contrastar la información anterior sin llegar a invalidarla."
+    ],
+    correcta: 3, // D
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 36,
+    contexto: "matrimonio",
+    enunciado: `La palabra "dote" utilizada en el segundo párrafo del texto, puede remplazarse, sin que se modifique el sentido de lo dicho por:`,
+    opciones: [
+      "Ahorros de la futura esposa",
+      "Dinero de los familiares",
+      "Aporte patrimonial",
+      "Ceremonia matrimonial"
+    ],
+    correcta: 2, // C
+    afirmacion: "Identifica y entiende los contenidos locales que conforman un texto."
+  },
+  {
+    id: 37,
+    contexto: "matrimonio",
+    enunciado: "En el texto, ¿qué función cumple el tercer párrafo?",
+    opciones: [
+      "Presentar un paralelo entre las concepciones del amor y el matrimonio en la China tradicional y en Occidente.",
+      "Demostrar que en China el enamoramiento entre esposos era una amenaza al respeto y la solidaridad de la familia.",
+      "Sintetizar las razones por las cuales en algunas culturas el enamoramiento y el matrimonio se consideran incompatibles.",
+      "Proveer un ejemplo de cómo la asociación entre el amor y el matrimonio no es algo propio de todos los tiempos y culturas."
+    ],
+    correcta: 3, // D
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 38,
+    contexto: "matrimonio",
+    enunciado: "De acuerdo con el texto, ¿cuál de los siguientes enunciados apoya la idea de que el amor maduro y sincero no siempre ha sido considerado como la base de la familia?",
+    opciones: [
+      "En los años 50 se produjo una marcada distinción entre los roles masculino y femenino en la familia.",
+      "La idea del amor como la razón que ha de llevar al matrimonio surgió con el movimiento romántico en el siglo XVIII.",
+      "Ambos miembros de la pareja deben poner mucho empeño para que el matrimonio se sostenga.",
+      "El matrimonio se consolidó en el siglo XIX como la principal forma de institucionalización del amor conyugal."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 39,
+    contexto: "matrimonio",
+    enunciado: "De acuerdo con el texto, ¿cuál de los siguientes ejemplos ilustra la idea de la familia como una institución política y económica?",
+    opciones: [
+      "En la Edad Media la mujer aportaba una dote en el momento de casarse.",
+      "Entre los fulbes africanos es común que las mujeres nieguen amar a sus maridos.",
+      "En los siglos XVIII y XIX cambió la idea sobre cuál es la base que sostiene la familia.",
+      "En la sociedad china solo hasta la década de 1920 se acuñó un término para designar el cariño entre esposos."
+    ],
+    correcta: 0, // A
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 40,
+    contexto: "matrimonio",
+    enunciado: "De acuerdo con el texto, ¿qué implicación sobre el matrimonio entre los fulbes africanos puede derivarse a partir de lo dicho por el autor?",
+    opciones: [
+      "Que en esa comunidad no sucede que haya amor entre esposos.",
+      "Que en esa comunidad el amor no es una condición necesaria para el matrimonio.",
+      "Que las mujeres de esa comunidad sienten temor a enamorarse de sus esposos.",
+      "Que las mujeres de esa comunidad no ven su amor correspondido por sus esposos."
+    ],
+    correcta: 1, // B
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 41,
+    contexto: "matrimonio",
+    enunciado: "De acuerdo con el texto, ¿qué se puede concluir acerca del matrimonio?",
+    opciones: [
+      "Que es una institución que tiene únicamente propósitos económicos y políticos.",
+      "Que es la base de la familia en culturas tan diversas y complejas como las nuestras.",
+      "Que es una institución que varía dependiendo del contexto histórico y social.",
+      "Que es un pacto entre dos individuos que debe basarse en el amor y la confianza."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  // ===== TRANSITO (42-49) =====
+  {
+    id: 42,
+    contexto: "transito",
+    enunciado: `Según la infografía, "los países de ingresos medios solo tienen la mitad de los vehículos existentes en el mundo y, a pesar de eso, sufren el 80 % de las muertes por accidente de tránsito". En este enunciado, ¿qué función cumple la conjunción 'a pesar de'?`,
+    opciones: [
+      "Resaltar que el índice de muertes por accidente de tránsito en países de ingresos medios es bastante elevado dadas sus condiciones particulares.",
+      "Oponer el alto número de vehículos en países de ingresos medios frente al bajo porcentaje de muertes por accidente de tránsito.",
+      "Aclarar que el alto índice de muertes por accidente de tránsito en países de ingresos medios está estrechamente relacionado con el número de autos.",
+      "Señalar que el índice de muertes por accidente de tránsito en países de ingresos medios puede ser aún más alto de lo que dicen las cifras oficiales."
+    ],
+    correcta: 0, // A
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 43,
+    contexto: "transito",
+    enunciado: `Si alguien lee la infografía y hace la siguiente descripción: «La infografía muestra datos sobre la frecuencia de los accidentes de tránsito en el mundo, y ejemplos relacionados. Además, informa sobre la mortalidad por género, por ingresos, por número de vehículos, por tipo de vehículo y por ubicación regional.» Usted diría que la descripción es insatisfactoria porque:`,
+    opciones: [
+      "Pasa por alto información esencial contenida en la infografía.",
+      "El orden de su contenido no corresponde con el de la infografía.",
+      "Expone información que no está presente en la infografía.",
+      "Omite evidencias que sustentan la información de la infografía."
+    ],
+    correcta: 2, // C
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  },
+  {
+    id: 44,
+    contexto: "transito",
+    enunciado: "De acuerdo con la información presentada sobre el porcentaje de muertes por tipo de vehículo, se puede afirmar que es más probable que alguien que haya muerto por accidente de tránsito hubiera estado desplazándose",
+    opciones: ["a pie.", "en moto.", "en bicicleta.", "en otro tipo de vehículo."],
+    correcta: 3, // D
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 45,
+    contexto: "transito",
+    enunciado: "¿Qué se puede inferir de la información que presenta la infografía en el cuadro inferior izquierdo, sobre la cantidad relativa de muertes por accidentes de tránsito en función de la región?",
+    opciones: [
+      "Cuáles son los países donde menos se utilizan vehículos motorizados.",
+      "Cuáles zonas tienen el mismo número de muertes por accidente.",
+      "Cuál es el riesgo de morir en un accidente de tránsito según la zona geográfica.",
+      "Cuáles son las zonas geográficas en donde se requiere un mejoramiento de las vías."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 46,
+    contexto: "transito",
+    enunciado: "A partir de las gráficas sobre la relación entre el número de vehículos y el número de muertes en accidentes de tránsito se puede inferir que, comparada con la población de los países de ingresos medios, la de los países de ingresos altos",
+    opciones: [
+      "tiene más vehículos por persona.",
+      "usa menos el vehículo particular.",
+      "es más educada en materia vial.",
+      "está más expuesta a multas de tránsito."
+    ],
+    correcta: 2, // C
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 47,
+    contexto: "transito",
+    enunciado: "A propósito del cuadro que presenta la información según la cual 3 de 4 de los fallecidos en accidentes de tránsito son del sexo masculino, se puede afirmar que las figuras que acompañan el texto",
+    opciones: [
+      "ilustran la información presentada.",
+      "profundizan la información dada.",
+      "proporcionan información adicional.",
+      "ejemplifican la información descrita."
+    ],
+    correcta: 0, // A
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 48,
+    contexto: "transito",
+    enunciado: "A partir de la información presentada, se puede afirmar que el autor de la infografía tiene como propósito",
+    opciones: [
+      "sensibilizar al espectador sobre los riesgos de morir en un accidente de tránsito.",
+      "incentivar al espectador a que use formas de movilidad alternas al automóvil.",
+      "conmover al espectador presentando datos sobre el número de accidentes de tránsito.",
+      "sensibilizar al espectador acerca de la necesidad de manejar sobrio y despacio."
+    ],
+    correcta: 0, // A
+    afirmacion: "Comprende cómo se articulan las partes de un texto para darle un sentido global."
+  },
+  {
+    id: 49,
+    contexto: "transito",
+    enunciado: "De acuerdo con el contenido de la información presentada, ¿a cuál de los siguientes contextos se adecuaría mejor la infografía?",
+    opciones: [
+      "Una protesta ecológica en contra del uso de vehículos motorizados.",
+      "Una exposición sobre el transporte público como alternativa de movilidad.",
+      "Una campaña diseñada para promover la adquisición de seguros de vida.",
+      "Un estudio sobre asesinatos según el género y la condición socioeconómica."
+    ],
+    correcta: 2, // C
+    afirmacion: "Reflexiona a partir de un texto y evalúa su contenido."
+  }
+];
+
+// Exportar para uso global
+window.CONTEXTOS = CONTEXTOS;
+window.PREGUNTAS = PREGUNTAS;
+
+</script>
+<!-- LOGICA -->
+<script>
+// =====================================================
+// LOGICA DEL CUESTIONARIO – LECTURA CRÍTICA SABER 11°
+// =====================================================
+
+// URL del Google Apps Script para registrar resultados
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3UbYrpOMh1fXlaSICEe4922CldYrCDSpw-clqJzazPLyySYGO81IKMOF-Lx_27Imfww/exec";
+
+// Estado global
+const estado = {
+  estudiante: {},
+  respuestas: {},        // { idPregunta: indiceOpcion }
+  preguntaActual: 0,     // índice en el array PREGUNTAS
+  inicioPrueba: null,
+  finPrueba: null,
+  timerId: null
+};
+
+// ========== UTILIDADES ==========
+function $(sel){ return document.querySelector(sel); }
+function $$(sel){ return document.querySelectorAll(sel); }
+
+function formatearFecha(d){
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mn = String(d.getMinutes()).padStart(2,'0');
+  return `${dd}/${mm}/${yyyy} ${hh}:${mn}`;
+}
+
+function formatearTiempo(segundos){
+  const m = Math.floor(segundos/60);
+  const s = segundos % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ========== INICIALIZACIÓN ==========
+document.addEventListener("DOMContentLoaded", () => {
+  // Fecha en el formulario
+  const ahora = new Date();
+  $("#fecha-display").value = formatearFecha(ahora);
+
+  // Eventos
+  $("#form-registro").addEventListener("submit", iniciarPrueba);
+  $("#btn-anterior").addEventListener("click", () => cambiarPregunta(-1));
+  $("#btn-siguiente").addEventListener("click", () => cambiarPregunta(1));
+  $("#btn-revision").addEventListener("click", mostrarRevision);
+  $("#btn-volver-resultados").addEventListener("click", volverAResultados);
+  $("#btn-reiniciar").addEventListener("click", reiniciar);
+});
+
+// ========== FASE 1: REGISTRO ==========
+function iniciarPrueba(e){
+  e.preventDefault();
+
+  const institucion = $("#institucion").value.trim();
+  const nombre = $("#nombre").value.trim();
+  const grado = $("#grado").value;
+
+  // Validación
+  let valido = true;
+  if(!institucion){
+    $("#err-institucion").classList.add("show");
+    valido = false;
+  } else {
+    $("#err-institucion").classList.remove("show");
+  }
+  if(!nombre){
+    $("#err-nombre").classList.add("show");
+    valido = false;
+  } else {
+    $("#err-nombre").classList.remove("show");
+  }
+  if(!valido) return;
+
+  estado.estudiante = {
+    institucion,
+    nombre,
+    grado,
+    fechaInicio: new Date()
+  };
+  estado.inicioPrueba = Date.now();
+
+  // Ocultar registro, mostrar prueba
+  $("#seccion-registro").classList.add("oculto");
+  $("#portada").classList.add("oculto");
+  $("#seccion-prueba").classList.remove("oculto");
+
+  // Iniciar cronómetro
+  iniciarCronometro();
+
+  // Scroll arriba
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  // Pintar primera pregunta
+  estado.preguntaActual = 0;
+  renderPregunta();
+}
+
+function iniciarCronometro(){
+  estado.timerId = setInterval(() => {
+    const transcurrido = Math.floor((Date.now() - estado.inicioPrueba) / 1000);
+    $("#tiempo-transcurrido").textContent = formatearTiempo(transcurrido);
+  }, 1000);
+}
+
+function detenerCronometro(){
+  if(estado.timerId){
+    clearInterval(estado.timerId);
+    estado.timerId = null;
+  }
+}
+
+// ========== FASE 2: PREGUNTAS ==========
+function renderPregunta(){
+  const idx = estado.preguntaActual;
+  const total = PREGUNTAS.length;
+  const p = PREGUNTAS[idx];
+  const ctx = CONTEXTOS[p.contexto];
+
+  // Contador y barra
+  $("#num-actual").textContent = idx + 1;
+  const pct = ((idx + 1) / total) * 100;
+  $("#progreso-fill").style.width = pct + "%";
+
+  // Contexto (mostrar solo si cambia respecto a la anterior o es la primera)
+  const contextoPrev = idx > 0 ? PREGUNTAS[idx-1].contexto : null;
+  const mostrarContexto = idx === 0 || p.contexto !== contextoPrev;
+
+  const contextoCaja = $("#contexto-caja");
+  if(mostrarContexto || true){ // siempre lo mostramos porque puede haberse scrolleado
+    contextoCaja.innerHTML = renderContexto(ctx);
+    contextoCaja.classList.remove("oculto");
+  }
+
+  // Pregunta y opciones
+  const pregCaja = $("#pregunta-caja");
+  const letras = ['A','B','C','D'];
+  const respSel = estado.respuestas[p.id];
+
+  let opcionesHTML = p.opciones.map((op, i) => {
+    const sel = respSel === i ? 'seleccionada' : '';
+    return `
+      <label class="opcion ${sel}" data-idx="${i}">
+        <input type="radio" name="opcion-${p.id}" value="${i}" ${respSel === i ? 'checked' : ''}>
+        <span class="letra">${letras[i]}.</span>
+        <span class="texto-op">${op}</span>
+      </label>
+    `;
+  }).join('');
+
+  pregCaja.innerHTML = `
+    <div class="pregunta-num">Pregunta ${idx + 1} de ${total}</div>
+    <div class="pregunta-enunciado">${p.enunciado}</div>
+    <div class="opciones">${opcionesHTML}</div>
+  `;
+
+  // Listeners de opciones
+  $$("#pregunta-caja .opcion").forEach(el => {
+    el.addEventListener("click", () => {
+      const i = parseInt(el.dataset.idx);
+      estado.respuestas[p.id] = i;
+      $$("#pregunta-caja .opcion").forEach(x => x.classList.remove("seleccionada"));
+      el.classList.add("seleccionada");
+      const radio = el.querySelector('input[type="radio"]');
+      if(radio) radio.checked = true;
+    });
+  });
+
+  // Botones de navegación
+  $("#btn-anterior").disabled = (idx === 0);
+  const btnSig = $("#btn-siguiente");
+  if(idx === total - 1){
+    btnSig.textContent = "✓ Finalizar prueba";
+    btnSig.classList.remove("btn-primario");
+    btnSig.classList.add("btn-turquesa");
+  } else {
+    btnSig.textContent = "Siguiente →";
+    btnSig.classList.remove("btn-turquesa");
+    btnSig.classList.add("btn-primario");
+  }
+
+  // Scroll arriba cuando cambia contexto
+  if(mostrarContexto){
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+
+function renderContexto(ctx){
+  let html = `<span class="etiqueta">${ctx.etiqueta}</span>`;
+  html += `<h3>${ctx.titulo}</h3>`;
+
+  if(ctx.tipo === 'texto'){
+    html += `<div class="texto-lectura">${ctx.contenido}</div>`;
+  } else if(ctx.tipo === 'infografia' || ctx.tipo === 'imagen'){
+    html += `<div class="descripcion-grafica"><strong>📊 Descripción del recurso visual:</strong><br><br>${ctx.contenido.replace(/\n/g,'<br>')}</div>`;
+    if(ctx.descripcionExtra){
+      html += `<p style="font-size:12px;color:var(--texto-suave);margin-top:8px;font-style:italic">${ctx.descripcionExtra}</p>`;
+    }
+  }
+
+  html += `<div class="fuente">${ctx.fuente}</div>`;
+  return html;
+}
+
+function cambiarPregunta(delta){
+  const idx = estado.preguntaActual;
+  const total = PREGUNTAS.length;
+
+  // Si es el último y se avanza → finalizar
+  if(idx === total - 1 && delta > 0){
+    finalizarPrueba();
+    return;
+  }
+
+  const nuevo = idx + delta;
+  if(nuevo < 0 || nuevo >= total) return;
+
+  estado.preguntaActual = nuevo;
+  renderPregunta();
+}
+
+// ========== FASE 3: RESULTADOS ==========
+function finalizarPrueba(){
+  // Confirmar si faltan respuestas
+  const sinResponder = PREGUNTAS.filter(p => estado.respuestas[p.id] === undefined).length;
+  if(sinResponder > 0){
+    if(!confirm(`Tienes ${sinResponder} pregunta(s) sin responder. ¿Deseas finalizar de todos modos?`)){
+      return;
+    }
+  }
+
+  detenerCronometro();
+  estado.finPrueba = Date.now();
+
+  // Calcular puntaje
+  let correctas = 0;
+  PREGUNTAS.forEach(p => {
+    if(estado.respuestas[p.id] === p.correcta) correctas++;
+  });
+  const total = PREGUNTAS.length;
+  const incorrectas = total - correctas;
+  const pctAcierto = Math.round((correctas / total) * 100);
+  const puntajeSaber = Math.round((correctas / total) * 100); // escala 0-100
+
+  // Mostrar sección resultados
+  $("#seccion-prueba").classList.add("oculto");
+  $("#seccion-resultados").classList.remove("oculto");
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  // Animar score
+  animarNumero("#score-final", 0, puntajeSaber, 1200);
+  $("#barra-escala-fill").style.width = puntajeSaber + "%";
+  $("#num-correctas").textContent = correctas;
+  $("#num-incorrectas").textContent = incorrectas;
+  $("#pct-acierto").textContent = pctAcierto + "%";
+
+  // Clasificación por nivel
+  const clasif = clasificarNivel(puntajeSaber);
+  $("#nivel-desempeno").textContent = clasif.nivel;
+  $("#nivel-desempeno").className = "nivel " + clasif.clase;
+  $("#desc-nivel").textContent = clasif.descripcion;
+
+  // Enviar a Apps Script
+  enviarResultado({
+    correctas, incorrectas, total, puntajeSaber, pctAcierto
+  });
+}
+
+function clasificarNivel(puntaje){
+  if(puntaje >= 80) return {
+    nivel: "🏆 Nivel 4 — Avanzado",
+    clase: "n4",
+    descripcion: "Excelente desempeño. Demuestras dominio de la lectura crítica en todos los niveles de comprensión."
+  };
+  if(puntaje >= 65) return {
+    nivel: "✅ Nivel 3 — Satisfactorio",
+    clase: "n3",
+    descripcion: "Buen desempeño. Comprendes textos, integras información e infieres ideas implícitas."
+  };
+  if(puntaje >= 45) return {
+    nivel: "⚠ Nivel 2 — Mínimo",
+    clase: "n2",
+    descripcion: "Desempeño aceptable. Debes reforzar la interpretación global y la reflexión sobre los textos."
+  };
+  return {
+    nivel: "❗ Nivel 1 — Insuficiente",
+    clase: "n1",
+    descripcion: "Debes profundizar en las tres competencias: identificar, relacionar y reflexionar sobre los textos."
+  };
+}
+
+function animarNumero(sel, desde, hasta, duracion){
+  const el = $(sel);
+  const inicio = performance.now();
+  function paso(t){
+    const avance = Math.min((t - inicio) / duracion, 1);
+    const valor = Math.round(desde + (hasta - desde) * avance);
+    el.textContent = valor;
+    if(avance < 1) requestAnimationFrame(paso);
+  }
+  requestAnimationFrame(paso);
+}
+
+// ========== ENVÍO A GOOGLE APPS SCRIPT ==========
+function enviarResultado(datos){
+  const statusEl = $("#envio-status");
+  statusEl.className = "envio-status loading";
+  statusEl.textContent = "⏳ Registrando resultado…";
+
+  const tiempoSegundos = Math.floor((estado.finPrueba - estado.inicioPrueba) / 1000);
+
+  const payload = {
+    prueba: "Lectura Crítica",
+    institucion: estado.estudiante.institucion,
+    nombre: estado.estudiante.nombre,
+    grado: estado.estudiante.grado || "",
+    fecha: formatearFecha(estado.estudiante.fechaInicio),
+    correctas: datos.correctas,
+    incorrectas: datos.incorrectas,
+    total: datos.total,
+    puntaje: datos.puntajeSaber,
+    porcentaje: datos.pctAcierto,
+    tiempo: formatearTiempo(tiempoSegundos),
+    respuestas: JSON.stringify(estado.respuestas)
+  };
+
+  // Usamos fetch con mode:'no-cors' porque Apps Script no devuelve CORS headers por defecto
+  // y formato form-urlencoded para que Apps Script lo parsee fácilmente
+  const formBody = Object.keys(payload)
+    .map(k => encodeURIComponent(k) + "=" + encodeURIComponent(payload[k]))
+    .join("&");
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: formBody
+  })
+  .then(() => {
+    statusEl.className = "envio-status ok";
+    statusEl.textContent = "✓ Resultado registrado correctamente.";
+  })
+  .catch(err => {
+    console.error("Error enviando:", err);
+    statusEl.className = "envio-status err";
+    statusEl.textContent = "⚠ No se pudo registrar el resultado. Tu puntaje sigue visible aquí.";
+  });
+}
+
+// ========== FASE 4: REVISIÓN ==========
+function mostrarRevision(){
+  const lista = $("#lista-revision");
+  const letras = ['A','B','C','D'];
+
+  lista.innerHTML = PREGUNTAS.map((p, idx) => {
+    const rUsuario = estado.respuestas[p.id];
+    const acierto = rUsuario === p.correcta;
+    const claseItem = acierto ? '' : 'mal';
+    const ctxTitulo = CONTEXTOS[p.contexto].titulo;
+
+    let htmlUsuario;
+    if(rUsuario === undefined){
+      htmlUsuario = `<div class="rta no">✗ Tu respuesta: <strong>No contestada</strong></div>`;
+    } else if(acierto){
+      htmlUsuario = `<div class="rta ok">✓ Tu respuesta: <strong>${letras[rUsuario]}.</strong> ${p.opciones[rUsuario]}</div>`;
+    } else {
+      htmlUsuario = `<div class="rta no">✗ Tu respuesta: <strong>${letras[rUsuario]}.</strong> ${p.opciones[rUsuario]}</div>`;
+    }
+
+    const htmlCorrecta = acierto ? '' :
+      `<div class="rta ok">✓ Respuesta correcta: <strong>${letras[p.correcta]}.</strong> ${p.opciones[p.correcta]}</div>`;
+
+    return `
+      <div class="revision-item ${claseItem}">
+        <h4>Pregunta ${idx+1} — <span style="color:var(--texto-suave);font-weight:normal;font-size:13px">${ctxTitulo}</span></h4>
+        <p style="font-size:14px">${p.enunciado}</p>
+        ${htmlUsuario}
+        ${htmlCorrecta}
+        <div class="afirmacion">📘 Afirmación evaluada: ${p.afirmacion}</div>
+      </div>
+    `;
+  }).join('');
+
+  $("#seccion-resultados").classList.add("oculto");
+  $("#seccion-revision").classList.remove("oculto");
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function volverAResultados(){
+  $("#seccion-revision").classList.add("oculto");
+  $("#seccion-resultados").classList.remove("oculto");
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ========== REINICIO ==========
+function reiniciar(){
+  if(!confirm("¿Deseas iniciar una nueva prueba? Se perderán los datos actuales.")){
+    return;
+  }
+  // Limpiar estado
+  estado.estudiante = {};
+  estado.respuestas = {};
+  estado.preguntaActual = 0;
+  estado.inicioPrueba = null;
+  estado.finPrueba = null;
+  detenerCronometro();
+
+  // Limpiar formulario
+  $("#form-registro").reset();
+  $("#fecha-display").value = formatearFecha(new Date());
+  $$(".error-msg").forEach(e => e.classList.remove("show"));
+
+  // Mostrar secciones iniciales
+  $("#portada").classList.remove("oculto");
+  $("#seccion-registro").classList.remove("oculto");
+  $("#seccion-prueba").classList.add("oculto");
+  $("#seccion-resultados").classList.add("oculto");
+  $("#seccion-revision").classList.add("oculto");
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+</script>
+</body>
+</html>
